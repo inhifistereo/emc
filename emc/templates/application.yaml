@@ -7,8 +7,6 @@ spec:
     metadata:
       labels:
         app: {{ template "emc.fullname" . }}-emctest
-      annotations:
-        timestamp: "{{ date "20060102150405" .Release.Time }}"
     spec:
       containers:
       - name: emctest
