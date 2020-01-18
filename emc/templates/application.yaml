@@ -15,3 +15,14 @@ spec:
         image: dptest.azurecr.io/emctest
       imagePullSecrets:
       - name: acr-auth
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: emctest-lb
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+  selector:
+    app: {{ template "emc.fullname" . }}-emctest
