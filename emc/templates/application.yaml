@@ -15,14 +15,30 @@ spec:
         image: dptest.azurecr.io/emctest
       imagePullSecrets:
       - name: acr-auth
+      ports:
+      - name: {{.Values.containerPort}}
 ---
-apiVersion: v1
-kind: Service
+apiVersion: extensions/v1beta1
+kind: Ingress
 metadata:
-  name: emctest-lb
+{{- if .Values.ingress.annotations }}
+  annotations:
+{{ toYaml .Values.ingress.annotations | indent 4 }}
+{{- end }}
+  name: {{ template "fullname" . }}
 spec:
-  type: LoadBalancer
-  ports:
-  - port: 80
-  selector:
-    app: {{ template "emc.fullname" . }}-emctest
+  rules:
+  - host: {{ .Values.ingress.hostname | quote }}
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: {{ template "fullname" . }}
+          servicePort: {{ .Values.servicePort }}
+{{- if .Values.ingress.tls }}
+  tls:
+  - secretName: {{ .Values.ingress.hostname | quote }}
+    hosts:
+      - {{ .Values.ingress.hostname | quote }}
+{{- end -}}
+{{- end }}

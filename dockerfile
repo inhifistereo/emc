@@ -15,7 +15,6 @@ FROM mcr.microsoft.com/dotnet/core/aspnet:3.0
 WORKDIR /app
 COPY --from=builder /app .
 
-ENV PORT 80
-EXPOSE 80
+EXPOSE 8080
 
 ENTRYPOINT dotnet $(cat /app/__assemblyname).dll
