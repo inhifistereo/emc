@@ -289,3 +289,5 @@ __pycache__/
 
 # Misc Files
 script.txt
+aws/
+*.zip
