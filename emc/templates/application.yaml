@@ -3,6 +3,9 @@ kind: Deployment
 metadata:
   name: emctest
 spec:
+  selector:
+    matchLabels: 
+      app: emctest
   template:
     metadata:
       labels:
