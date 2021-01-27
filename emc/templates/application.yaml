@@ -5,7 +5,7 @@ metadata:
 spec:
   selector:
     matchLabels: 
-      app: emctest
+      app: release-63-emc-emctest
   template:
     metadata:
       labels:
