@@ -1,47 +1,26 @@
-name: "CI"
+name: Build a Docker image and Push it to ACR
 
 on:
   push:
-    branches:
-      - master
-    paths-ignore:
-      - '**/*.md'
-      - '**/*.gitignore'
-      - '**/*.gitattributes'
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
   workflow_dispatch:
-    branches:
-      - main
-    paths-ignore:
-      - '**/*.md'
-      - '**/*.gitignore'
-      - '**/*.gitattributes'
-      
+
 jobs:
   build:
-    if: github.event_name == 'push' && contains(toJson(github.event.commits), '***NO_CI***') == false && contains(toJson(github.event.commits), '[ci skip]') == false && contains(toJson(github.event.commits), '[skip ci]') == false
-    name: Build 
     runs-on: ubuntu-latest
-    env:
-      DOTNET_CLI_TELEMETRY_OPTOUT: 1
-      DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
-      DOTNET_NOLOGO: true
-      DOTNET_GENERATE_ASPNET_CERTIFICATE: false
-      DOTNET_ADD_GLOBAL_TOOLS_TO_PATH: false
-      DOTNET_MULTILEVEL_LOOKUP: 0
-
     steps:
-    - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
       
-    - name: Setup .NET Core SDK
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 3.1.x
+      - uses: azure/docker-login@v1
+        with:
+          login-server: dptest.azurecr.io
+          username: ${{ secrets.ACR_USERNAME }}
+          password: ${{ secrets.ACR_PASSWORD }}
 
-    - name: Restore
-      run: dotnet restore
-
-    - name: Build
-      run: dotnet build --configuration Release --no-restore
-
-    - name: Test
-      run: dotnet test
+      - run: |
+          docker build . -t dptest.azurecr.io/emctest:${{ github.sha }}
+          docker push dptest.azurecr.io/emctest:${{ github.sha }}
+          docker push dptest.azurecr.io/emctest:latest
