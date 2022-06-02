@@ -23,4 +23,3 @@ jobs:
       - run: |
           docker build . -t dptest.azurecr.io/emctest:${{ github.sha }}
           docker push dptest.azurecr.io/emctest:${{ github.sha }}
-          docker push dptest.azurecr.io/emctest:latest
