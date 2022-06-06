@@ -15,6 +15,6 @@ FROM mcr.microsoft.com/dotnet/aspnet:6.0
 WORKDIR /app
 COPY --from=builder /app .
 
-EXPOSE 8080
+EXPOSE 80
 
 ENTRYPOINT dotnet $(cat /app/__assemblyname).dll
